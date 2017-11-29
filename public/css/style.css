@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans|Lato:400,700');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 20px;
+}
+
+body {
+    background-color: #f7f7f7;
+    font-family: 'Open Sans', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container {
+    max-width: 400px;
+}
+
+input {
+    width: 100%;
+    padding: 15px 30px;
+    background: transparent;
+    border: 1px solid #dcdcdc;
+    border-radius: 10px;
+}
+
+button {
+    width: 100%;
+    padding: 10px 20px;
+    height: 50px;
+    border-radius: 10px;
+    border: 1px solid hsl(200, 100%, 50%);
+    color: white;
+    background-color:  hsl(200, 100%, 50%);
+}
+
+button:hover {
+    background-color: transparent;
+    color:  hsl(200, 100%, 50%);
+}
+
+button:active, button:focus {
+    outline: none;
+}
+
+.logo {
+    text-align: center;
+    margin: 30px 0;
+    background-color: #0b80cf;
+    padding: 30px 15px;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    font-family: 'Lato', Arial, sans-serif;
+    align-self: stretch;
+    box-shadow: inset 0px 0px 15px 1px #505065;
+}
+
+.logo p {
+    font-size: 0.8em;
+    margin: 10px 0;
+    color: hsl(200, 100%, 100%);
+}
+
+.logo h1 {
+    color: hsl(200, 100%, 100%);
+    font-weight: 700;
+}
+
+.logo > * {
+    margin: 0;
+    padding: 0;
+}
+form > * {
+    margin: 10px 0;
+}
+
+.container h1 {
+    text-align: center;
+}
+
+input:focus {
+    outline: none;
+    border: 1px solid  hsl(200, 100%, 50%);
+}
