@@ -1,0 +1,10 @@
+<% include partials/header %>
+<div class="container">
+    <h1>Create New User</h1>
+    <form action="/users" method="POST">
+        <input type="text" name="username" placeholder="username">
+        <input type="password" name="password" placeholder="password">
+        <button>Submit</button>
+    </form>
+</div>
+<% include partials/footer %>
