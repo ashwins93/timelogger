@@ -1,6 +1,6 @@
 # Time Logger Tim
 
-Tim is your virtual time keeper. He keeps track of your employees' daily check in time. 
+Tim is your virtual time keeper. He keeps track of your users' daily check in time. 
 
 ## Features
  * Two types of user accounts - Admin and Others.
