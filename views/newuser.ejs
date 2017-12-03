@@ -1,10 +1,17 @@
 <% include partials/header %>
-<div class="container">
+<div class="container-sm">
     <h1>Create New User</h1>
     <form action="/users" method="POST">
         <input type="text" name="username" placeholder="username">
         <input type="password" name="password" placeholder="password">
-        <button>Submit</button>
+        <input id="admin" type="checkbox" name="isAdmin">
+        <label for="admin">Administrator</label>
+        <button class="button block">Submit</button>
     </form>
+    <% if (currentUser) { %>
+        <a href="/users/<%= currentUser.username %>">Go Back</a>
+    <% } else { %>
+        <a href="/">Go Back</a>
+    <% } %>
 </div>
 <% include partials/footer %>

@@ -6,9 +6,11 @@ var express         = require('express')
   , LocalStrategy   = require('passport-local')
   , session         = require('express-session')
   , User            = require('./models/user')
+  , Log             = require('./models/log')
   , flash           = require('connect-flash')
 ;
 
+require('dotenv').config();
 // Auth config
 app.use(flash());
 app.use(session({
@@ -29,8 +31,9 @@ app.use(function (req, res, next) {
 });
 // Auth end
 
-mongoose.connect(process.env.URL || "mongodb://localhost:27017/timelogs", {useMongoClient: true});
+mongoose.connect(process.env.DBURL  || "mongodb://localhost:27017/timelogs", {useMongoClient: true});
 mongoose.Promise = Promise;
+// mongoose.set('debug', true);
 
 // setup
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -43,20 +46,68 @@ app.get("/", function(req, res) {
 });
 
 app.post("/", passport.authenticate("local", {
-    failureRedirect: "/"
+    failureRedirect: "/",
+    failureFlash: true
 }), function(req, res) {
-    res.redirect(`/profile/${req.user.username}`);
+    res.redirect(`/users/${req.user.username}`);
 });
 
-app.get("/profile/:uname", function(req, res) {
-    res.send(`Hello, ${req.params.uname}. Welcome to your profile`);
+app.get("/users/checkin", isLoggedIn, async function(req, res) {
+    try {
+        var user = await User.findByUsername(req.user.username).populate('logins').exec();
+        var logs = user.logins;
+        if(logs.some(function(log) {
+            return log.time.toDateString() === new Date().toDateString();
+        })) {
+            req.flash('error', "You've already checked in today");
+            return res.redirect('back');
+        }
+        var newLog = await Log.create({
+            user: {
+                id: user._id,
+                username: user.username
+            }
+        });
+        user.logins.push(newLog);
+        user.save();
+        res.redirect(`/users/${req.user.username}`)
+    } catch(err) {
+        console.error(err);
+        req.flash('error', 'Sorry, could not check you in');
+        res.redirect('/');
+    }
 });
 
-app.get("/users/new", function(req, res) {
+app.get("/users/new", isLoggedIn, isAdmin, function(req, res) {
     res.render("newuser");
 });
 
-app.post('/users', function(req, res) {
+app.get("/users/change", isLoggedIn, function(req, res) {
+    res.render("changepwd");
+});
+
+app.get("/users/:uname", async function(req, res) {
+    try {
+        var user = await User.findOne({
+            username: req.params.uname
+        }).populate('logins').exec();
+        res.render('profile', { 
+            user: user.username,
+            logins: user.logins 
+        });
+    } catch (err) {
+        console.error(err);
+        res.redirect('back');
+    }
+});
+
+app.get("/dashboard", isLoggedIn, isAdmin, async function(req, res) {
+    let logs = await Log.find();
+    let users = await User.find();
+    res.render("dashboard", { users: users, logins: logs });
+});
+
+app.post('/users', isLoggedIn, isAdmin,  function(req, res) {
     User.register(
         new User({ username: req.body.username }),
         req.body.password,
@@ -65,13 +116,41 @@ app.post('/users', function(req, res) {
                 req.flash("error", err.message);
                 return res.redirect("/users/new");
             }
-            passport.authenticate("local")(req, res, function() {
-                req.flash("success", `Welcome, ${user.username}`);
-                res.send(`${user.username} created successfully!`);
-            });
+            if (req.body.isAdmin) {
+                user.isAdmin = true;
+                user.save();
+            }        
+            req.flash("success", `${user.username}'s account created succesfully`);
+            res.redirect(`/users/${user.username}`);
         }
     );
+    
 });
+
+app.post('/users/change', isLoggedIn, async function(req, res) {
+    try {
+        let user = await User.findByUsername(req.user.username);
+        user.setPassword(req.body.password, function(){
+            user.save();
+            req.flash('success', 'Password changed!');
+            res.redirect(`/users/${user.username}`);
+        });
+    } catch(err) {
+        console.error(err);
+        req.flash('error', err.message);
+        res.redirect('back');
+    }
+});
+
+app.get("/logout", function (req, res) {
+    req.logout();
+    req.flash("success", "You have logged out");
+    res.redirect("/");
+});
+
+app.get("*", function(req, res) {
+    res.status(404).send("Page not found");
+})
 
 app.listen(process.env.PORT || 3000, function() {
     console.log("Server running in the port: " + (process.env.PORT || 3000));
@@ -82,5 +161,13 @@ function isLoggedIn(req, res, next) {
         return next();
     }
     req.flash("error", "You have to be logged in!");
-    res.redirect("/login");
+    res.redirect("/");
+}
+
+function isAdmin(req, res, next) {
+    if(req.user.isAdmin) {
+        return next();
+    }
+    req.flash("error", "Sorry only an administrator can do that");
+    res.redirect("back");
 }

@@ -1,0 +1,10 @@
+<% include partials/header %>
+<div class="container-sm">
+    <h1>Change password</h1>
+    <form action="/users/change" method="POST">
+        <input type="password" name="password" placeholder="Enter new password">
+        <button class="button block">Submit</button>
+    </form>
+    <a href="/users/<%= currentUser.username %>">Go Back</a>
+</div>
+<% include partials/footer %>

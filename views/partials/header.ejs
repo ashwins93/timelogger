@@ -10,3 +10,15 @@
     <h1>Tim</h1>
     <p><span>The Virtual Timekeeper</span></p>
 </div>
+<div class="container-sm">
+    <% if (error.toString()) { %>
+    <div class="alert error">
+        <%= error %>
+    </div>
+    <% } %>
+    <% if (success.toString()) { %>
+    <div class="alert success">
+        <%= success %>
+    </div>
+    <% } %>
+</div>

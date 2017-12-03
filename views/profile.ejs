@@ -1,0 +1,77 @@
+<% include partials/header %>
+<div class="container">
+    <% if(currentUser && currentUser.username === user) { %>
+        <h1>Welcome <%= user %></h1>
+    <% } else { %>
+        <h1><%= user %></h1>
+    <% } %>
+    <div class="body-container">
+        <div class="actions">
+            <ul class="list-group">
+                <% if(currentUser) { %> 
+                    <li class="list-group-item"><a href="/users/<%= currentUser.username %>"><%= currentUser.username %></a></li>
+                    <li class="list-group-item"><a href="/logout">Logout</a></li>
+                <% } else { %>
+                    <li class="list-group-item"><a href="/">Login</a></li>
+                <% } %>
+                <% if(currentUser && currentUser.isAdmin) { %>
+                    <li class="list-group-item"><a href="/dashboard">Admin dashboard</a></li>
+                    <li class="list-group-item"><a href="/users/new" >Create a new user</a></li>
+                <% } %>
+                <% if(currentUser && currentUser.username === user) { %>
+                    <li class="list-group-item"><a href="/users/change" >Change password</a></li>
+                    <li class="list-group-item">
+                        <a href="/users/<%= user %>">
+                            <span>View messages</span>
+                            <span class="red-text">Coming soon!</span>
+                        </a>
+                    </li>
+                <% } else { %> 
+                    <li class="list-group-item">
+                        <a href="/users/<%= user %>">
+                            <span>Send a message to <%= user %></span>
+                            <span class="red-text">Coming soon!</span>
+                        </a>
+                    </li>
+                <% } %>
+            </ul>
+        </div>
+        <div class="main-content">
+            <% if(currentUser && currentUser.username === user) { %>
+                <a href="/users/checkin" class="button">Check In</a>
+            <% } %>
+            <% if(currentUser && (currentUser.username === user || currentUser.isAdmin)) { %>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Day</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (logins) { %>
+                            <% var days = [
+                                'Sunday',
+                                'Monday',
+                                'Tuesday',
+                                'Wednesday',
+                                'Thursday',
+                                'Friday',
+                                'Saturday'
+                            ]; %>
+                            <% logins.forEach(function (login) { %>
+                                <tr>
+                                    <td><%= login.time.toLocaleDateString() %></td>
+                                    <td><%= days[login.time.getDay()] %></td>
+                                    <td><%= login.time.toLocaleTimeString() %></td>
+                                </tr>
+                            <% }) %>
+                        <% } %>
+                    </tbody>
+                </table>
+            <% } %>
+        </div>
+    </div>
+</div>
+<% include partials/footer %>
