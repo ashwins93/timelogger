@@ -9,20 +9,15 @@
     <!-- <link href="/css/style.css" rel="stylesheet" /> -->
 </head>
 <body>
-  <header>
-    <nav class="container navbar navbar-expand-lg navbar-light bg-light">
+  <header class="container mb-5">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <a class="navbar-brand" href="/">Tim</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        
         <ul class="navbar-nav">
-          <% if(currentUser) { %> 
-              <li class="nav-item"><a class="nav-link" href="/users/<%= currentUser.username %>"><%= currentUser.username %></a></li>
-              <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
-          <% } else { %>
-              <li class="nav-item"><a class="nav-link" href="/">Login</a></li>
-          <% } %>
           <% if(currentUser && currentUser.isAdmin) { %>
               <li class="nav-item">
                 <a class="nav-link" href="/dashboard?date=<%= new Date().toLocaleDateString() %>">
@@ -31,23 +26,38 @@
               </li>
               <li class="nav-item"><a class="nav-link" href="/users/new" >Create a new user</a></li>
           <% } %>
+          <% if(currentUser) { %> 
+            <li class="nav-item">
+              <a class="nav-link" href="/users/<%= currentUser.username %>">Profile</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="/users/<%= currentUser.username %>"
+                id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Options
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item" href="/users/change" >Change password</a>
+                <a class="dropdown-item" href="/logout">Logout</a>
+
+              </div>
+            </li>
+          <% }  else { %>
+              <li class="nav-item"><a class="nav-link" href="/">login</a></li>
+          <% } %>%>
         </ul>
-        <% if(currentUser && currentUser.username === user) { %>
-            <li class="list-group-item"><a href="/users/change" >Change password</a></li>
-            
-        <% } %>
+        
       </div>
     </nav>
   </header>
 
-<div class="container-sm">
+<div class="container">
     <% if (error.toString()) { %>
-    <div class="alert error">
+    <div class="alert alert-danger">
         <%= error %>
     </div>
     <% } %>
     <% if (success.toString()) { %>
-    <div class="alert success">
+    <div class="alert alert-success">
         <%= success %>
     </div>
     <% } %>

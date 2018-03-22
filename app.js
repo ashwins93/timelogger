@@ -9,6 +9,7 @@ var express         = require('express')
   , Log             = require('./models/log')
   , flash           = require('connect-flash')
   , routes          = require('./routes')
+  , strftime        = require('strftime')
 ;
 
 require('dotenv').config();
@@ -28,6 +29,8 @@ app.use(function (req, res, next) {
     res.locals.currentUser = req.user;
     res.locals.error = req.flash("error");
     res.locals.success = req.flash("success");
+    res.locals.user = null;
+    res.locals.strftime = strftime;
     next();
 });
 // Auth end

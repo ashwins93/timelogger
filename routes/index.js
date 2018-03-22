@@ -2,7 +2,8 @@ const express = require('express'),
   router = express.Router(),
   passport = require('passport'),
   User = require('../models/user'),
-  Log = require('../models/log');
+  Log = require('../models/log'),
+  strftime = require('strftime');
 
 
 router.get("/", function(req, res) {
@@ -34,6 +35,7 @@ router.get("/users/checkin", isLoggedIn, async function(req, res) {
         });
         user.logins.push(newLog);
         user.save();
+        req.flash('success', "You've checked in successfully at " + strftime("%I:%M %p"));
         res.redirect(`/users/${req.user.username}`)
     } catch(err) {
         console.error(err);

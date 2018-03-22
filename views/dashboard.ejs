@@ -1,64 +1,42 @@
 <% include partials/header %>
 <div class="container">
-    <h1>Admin dashboard</h1>
-    <div class="body-container">
-        <div class="actions">
-            <ul class="list-group">
-                <% if(currentUser) { %> 
-                    <li class="list-group-item"><a href="/users/<%= currentUser.username %>"><%= currentUser.username %></a></li>
-                    <li class="list-group-item"><a href="/logout">Logout</a></li>
-                <% } else { %>
-                    <li class="list-group-item"><a href="/">Login</a></li>
+    <h2 class="display-4 mb-4">Admin dashboard</h2>
+        <form action="/dashboard" method="GET">
+            <div class="input-group mb-3" style="max-width: 500px;">
+                <input id="date" class="form-control" type="date" name="date" placeholder="dd/mm/yyyy"/>
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary">Submit</button>
+                </div>
+            </div>
+        </form>
+        <table class="table">
+            <thead class="thead-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Day</th>
+                    <th>Time</th>
+                    <th>User</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (logins) { %>
+                    <% logins.forEach(function (login) { %>
+                        <tr>
+                            <td><%= strftime("%B %d, %Y", login.time) %></td>
+                            <td><%= strftime("%A", login.time) %></td>
+                            <td><%= strftime("%I:%M %p", login.time) %></td>
+                            <td><a href="/users/<%= login.user.username %>"><%= login.user.username %></a></td>
+                        </tr>
+                    <% }) %>
                 <% } %>
-                <% if(currentUser && currentUser.isAdmin) { %>
-                    <li class="list-group-item"><a href="/users/new" >Create a new user</a></li>
-                <% } %>
-            </ul>
+            </tbody>
+        </table>
+        <h3>Users</h3>
+        <div class="list-group" style="max-width: 300px;">
+            <% users.forEach(function (user) { %>
+                <a class="list-group-item list-group-item-action" href="/users/<%= user.username %>"><%= user.username %></a>
+            <% }) %>
         </div>
-        <div class="main-content">
-            <h3>Time Logs</h3>
-			<form action="/dashboard" method="GET">
-				<input type="date" name="date" placeholder="dd/mm/yyyy"/>
-				<button class="button sm">Submit</button>
-			</form>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Day</th>
-                        <th>Time</th>
-                        <th>User</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% if (logins) { %>
-                        <% var days = [
-                            'Sunday',
-                            'Monday',
-                            'Tuesday',
-                            'Wednesday',
-                            'Thursday',
-                            'Friday',
-                            'Saturday'
-                        ]; %>
-                        <% logins.forEach(function (login) { %>
-                            <tr>
-                                <td><%= login.time.toLocaleDateString() %></td>
-                                <td><%= days[login.time.getDay()] %></td>
-                                <td><%= login.time.toLocaleTimeString() %></td>
-                                <td><a href="/users/<%= login.user.username %>"><%= login.user.username %></a></td>
-                            </tr>
-                        <% }) %>
-                    <% } %>
-                </tbody>
-            </table>
-            <h3>Users</h3>
-            <ul class="list-group">
-                <% users.forEach(function (user) { %>
-                    <li class="list-group-item"><a href="/users/<%= user.username %>"><%= user.username %></a></li>
-                <% }) %>
-            </ul>
-        </div>
-    </div>
+        
 </div>
 <% include partials/footer %>

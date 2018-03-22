@@ -12,6 +12,8 @@ var logSchema = new mongoose.Schema({
         },
         username: String
     }
+}, {
+    usePushEach: true,
 })
 
 module.exports = mongoose.model('Log', logSchema);
