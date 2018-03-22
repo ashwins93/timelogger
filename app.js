@@ -93,7 +93,7 @@ app.get("/users/:uname", async function(req, res) {
         }).populate('logins').exec();
         res.render('profile', { 
             user: user.username,
-            logins: user.logins 
+            logins: user.logins.slice().sort((a, b) => b.time.getTime() - a.time.getTime()), 
         });
     } catch (err) {
         console.error(err);
@@ -102,8 +102,29 @@ app.get("/users/:uname", async function(req, res) {
 });
 
 app.get("/dashboard", isLoggedIn, isAdmin, async function(req, res) {
-    let logs = await Log.find();
-    let users = await User.find();
+	let date = new Date();
+	if(req.query.date && /^\d{4}-\d{2}-\d{2}$/.test(req.query.date)) {
+		date = new Date(req.query.date);
+	}
+	
+	date.setSeconds(0);
+	date.setHours(0);
+	date.setMinutes(0);
+
+	var dateMidnight = new Date(date);
+	dateMidnight.setHours(23);
+	dateMidnight.setMinutes(59);
+	dateMidnight.setSeconds(59);
+	
+	let logs = await Log.find(
+		{ 
+			time: { 
+				$gt : date,
+				$lt : dateMidnight
+			} 
+		}
+	);
+	let users = await User.find();
     res.render("dashboard", { users: users, logins: logs });
 });
 
