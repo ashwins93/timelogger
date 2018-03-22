@@ -2,14 +2,44 @@
 <html>
 <head>
     <title>Time Logs</title>
-    <link href="/css/normalize.min.css" rel="stylesheet">
-    <link href="/css/style.css" rel="stylesheet" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" >
+    <!-- <link href="/css/style.css" rel="stylesheet" /> -->
 </head>
 <body>
-<div class="logo">
-    <h1>Tim</h1>
-    <p><span>The Virtual Accountant</span></p>
-</div>
+  <header>
+    <nav class="container navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="/">Tim</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <% if(currentUser) { %> 
+              <li class="nav-item"><a class="nav-link" href="/users/<%= currentUser.username %>"><%= currentUser.username %></a></li>
+              <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+          <% } else { %>
+              <li class="nav-item"><a class="nav-link" href="/">Login</a></li>
+          <% } %>
+          <% if(currentUser && currentUser.isAdmin) { %>
+              <li class="nav-item">
+                <a class="nav-link" href="/dashboard?date=<%= new Date().toLocaleDateString() %>">
+                  Admin dashboard
+                </a>
+              </li>
+              <li class="nav-item"><a class="nav-link" href="/users/new" >Create a new user</a></li>
+          <% } %>
+        </ul>
+        <% if(currentUser && currentUser.username === user) { %>
+            <li class="list-group-item"><a href="/users/change" >Change password</a></li>
+            
+        <% } %>
+      </div>
+    </nav>
+  </header>
+
 <div class="container-sm">
     <% if (error.toString()) { %>
     <div class="alert error">
