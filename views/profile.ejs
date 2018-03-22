@@ -15,7 +15,7 @@
                     <li class="list-group-item"><a href="/">Login</a></li>
                 <% } %>
                 <% if(currentUser && currentUser.isAdmin) { %>
-                    <li class="list-group-item"><a href="/dashboard">Admin dashboard</a></li>
+                    <li class="list-group-item"><a href="/dashboard?date=<%= new Date().toLocaleDateString() %>">Admin dashboard</a></li>
                     <li class="list-group-item"><a href="/users/new" >Create a new user</a></li>
                 <% } %>
                 <% if(currentUser && currentUser.username === user) { %>
