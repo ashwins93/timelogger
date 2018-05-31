@@ -26,7 +26,14 @@
                         <tr>
                             <td><%= strftime("%B %d, %Y", login.time) %></td>
                             <td><%= strftime("%A", login.time) %></td>
-                            <td><%= strftime("%I:%M %p", login.time) %></td>
+                            <td>
+								<%= strftime("%I:%M %p", login.time) %>
+								<% if ((login.time.getHours() < 9) || (login.time.getHours() === 9 && login.time.getMinutes() <= 5)) { %>
+									<span style="color:gold;">
+										<i class="fas fa-star"></i>
+									</span>
+								<% } %>
+							</td>
                         </tr>
                     <% }) %>
                 <% } %>

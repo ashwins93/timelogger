@@ -20,6 +20,6 @@ svc.on('install',function(){
 
 svc.on('error', function(err) {
   logger.error(err);
-};
+});
 
 svc.install();

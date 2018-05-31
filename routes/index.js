@@ -3,7 +3,8 @@ const express = require('express'),
   passport = require('passport'),
   User = require('../models/user'),
   Log = require('../models/log'),
-  strftime = require('strftime');
+  strftime = require('strftime'),
+  path = require('path');
 
 
 router.get("/", function(req, res) {
@@ -135,9 +136,19 @@ router.get("/logout", function (req, res) {
     res.redirect("/");
 });
 
+router.get("/pivot-example", function (req, res) {
+	res.sendFile(path.resolve('.', 'public', 'PivotExamples.xlsx'));
+});
+
+router.get("/random-data", function (req, res) {
+	res.sendFile(path.resolve('.', 'public', 'RandomData.xlsx'));
+});
+
 router.get("*", function(req, res) {
     res.status(404).send("Page not found");
 });
+
+
 
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {
