@@ -58,9 +58,42 @@ router.get("/users/:uname", async function(req, res) {
         var user = await User.findOne({
             username: req.params.uname
         }).populate('logins').exec();
+		let starCount = await Log.aggregate([ 
+			{ 
+				$match: { 
+					"user.username": req.params.uname
+				} 
+			}, 
+			{ 
+				$project: { 
+					_id:0, 
+					hour: { 
+						$hour: "$time" 
+					}, 
+					minutes: { 
+						$minute: "$time" 
+					} 
+				} 
+			}, 
+			{ 
+				$match: {
+					$or: [
+						{ hour: { $lt: 3 } },
+						{
+							$and: [
+								{ hour: { $eq: 3 } },
+								{ minutes: { $lte: 35 } }
+							]
+						}   
+					] 
+				}
+			}, 
+			{ $count: "starCount" } 
+		]);
         res.render('profile', { 
             user: user.username,
-            logins: user.logins.slice().sort((a, b) => b.time.getTime() - a.time.getTime()), 
+            logins: user.logins.slice().sort((a, b) => b.time.getTime() - a.time.getTime()),
+			starCount: starCount[0].starCount
         });
     } catch (err) {
         console.error(err);

@@ -6,6 +6,9 @@
                 <span>Welcome <span>
             <% } %>
             <span><%= user.charAt(0).toUpperCase() + user.slice(1).toLowerCase() %></span>
+			<% if (starCount) { %>
+				<span class="stars"><i class="fas fa-star"></i> <%= starCount %></span>
+			<% } %>
         </h2>
         <% if(currentUser && currentUser.username === user) { %>
             <a href="/users/checkin" class="btn btn-outline-secondary btn-lg">Check In</a>
