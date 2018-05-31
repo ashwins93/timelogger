@@ -178,7 +178,7 @@ router.get("/random-data", function (req, res) {
 });
 
 router.get("/leaderboard", async function (req, res) {
-	let data = await Log.aggregate([ 
+	let aggregationPipeline = [ 
 		{
 			$project: { 
 				_id:0, 
@@ -215,8 +215,22 @@ router.get("/leaderboard", async function (req, res) {
 		{
 			$sort:{ count:-1 }
 		} 
-	]);
-	res.render("leaderboard", { users: data });
+	];
+	let qMonth = Number(req.query.month) || 0;
+	let qYear = Number(req.query.year) || 0;
+	let title = "All time";
+	if (qMonth > 0 && qMonth <= 12 && qYear > 0) {
+		aggregationPipeline[0].$project.month = { $month: "$time" };
+		aggregationPipeline[0].$project.year = { $year: "$time" };
+		aggregationPipeline[1].$match.month = qMonth;
+		aggregationPipeline[1].$match.year = qYear;
+		title = ["January", "February", "March", "April", "May", "June",
+			"July", "August", "September", "October", "November", "December"][qMonth - 1];
+		title += " " + qYear;
+	}
+	console.log(aggregationPipeline);
+	let data = await Log.aggregate(aggregationPipeline);
+	res.render("leaderboard", { users: data, title: title });
 });
 
 

@@ -1,20 +1,38 @@
 <% include partials/header %>
 <div class="container">
-    <div class="d-flex justify-content-between align-items-center m-3">
-        <h2 class="display-4">
-            Leaderboard 
-        </h2>
-        <% if(currentUser && currentUser.username === user) { %>
-            <a href="/users/checkin" class="btn btn-outline-secondary btn-lg">Check In</a>
-        <% } %>
-    </div>
-    <h4>All time records</h4>
-	<table class="table text-center">
-		<thead class="thead-light">
+    <h2 class="display-4">
+        Leaderboard 
+    </h2>    
+	<div class="d-flex justify-content-between">
+		<h4><%= title %> Records</h4>
+		<form class="form-inline mb-2" action="/leaderboard" method="GET">
+			<select name="month" class="custom-select form-control my-1 mr-sm-2" id="inlineFormCustomSelectPref">
+				<option selected>Month</option>
+				<option value="1">January</option>
+				<option value="2">February</option>
+				<option value="3">March</option>
+				<option value="4">April</option>
+				<option value="5">May</option>
+				<option value="6">June</option>
+				<option value="7">July</option>
+				<option value="8">August</option>
+				<option value="9">September</option>
+				<option value="10">October</option>
+				<option value="11">November</option>
+				<option value="12">December</option>
+			</select>
+
+			<input type="text" name="year" class="form-control my-1 mr-sm-2 text-right" id="inlineFormInputName2" placeholder="Year">
+
+			<button type="submit" class="btn btn-secondary my-1 mr-sm-2">Submit</button>
+		</form>
+	</div>
+	<table class="table table-sm w-75 mx-auto">
+		<thead class="thead-dark">
 			<tr>
 				<th>Rank</th>
 				<th>Name</th>
-				<th>Score</th>
+				<th class="text-right">Score</th>
 			</tr>
 		</thead>
 		<tbody>
