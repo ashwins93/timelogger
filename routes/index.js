@@ -177,10 +177,54 @@ router.get("/random-data", function (req, res) {
 	res.sendFile(path.resolve('.', 'public', 'RandomData.xlsx'));
 });
 
+router.get("/leaderboard", async function (req, res) {
+	let data = await Log.aggregate([ 
+		{
+			$project: { 
+				_id:0, 
+				username: "$user.username",
+				hour: { 
+					$hour: "$time" 
+				}, 
+				minutes: { 
+					$minute: "$time" 
+				} 
+			} 
+		}, 
+		{ 
+			$match: { 
+				$or: [ 
+					{
+						hour: { $lt: 3 } 
+					}, 
+					{ 
+						$and: [ 
+							{hour: 3}, 
+							{minutes: { $lte: 35 } }
+						]
+					} 
+				]
+			}
+		}, 
+		{ 
+			$group: { 
+				_id: "$username", 
+				count: { $sum: 1 } 
+			} 
+		}, 
+		{
+			$sort:{ count:-1 }
+		} 
+	]);
+	res.render("leaderboard", { users: data });
+});
+
+
+// All routes go above this line
+
 router.get("*", function(req, res) {
     res.status(404).send("Page not found");
 });
-
 
 
 function isLoggedIn(req, res, next) {

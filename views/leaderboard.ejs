@@ -1,0 +1,34 @@
+<% include partials/header %>
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center m-3">
+        <h2 class="display-4">
+            Leaderboard 
+        </h2>
+        <% if(currentUser && currentUser.username === user) { %>
+            <a href="/users/checkin" class="btn btn-outline-secondary btn-lg">Check In</a>
+        <% } %>
+    </div>
+    <h4>All time records</h4>
+	<table class="table text-center">
+		<thead class="thead-light">
+			<tr>
+				<th>Rank</th>
+				<th>Name</th>
+				<th>Score</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% if (users) { %>
+				<% users.forEach(function (user, idx) { %>
+					<tr>
+						<td><%= idx + 1 %></td>
+						<td><%= user._id.charAt(0).toUpperCase() + user._id.slice(1).toLowerCase() %></td>
+						<td class="text-right"><%= user.count %></td>
+					</tr>
+				<% }) %>
+			<% } %>
+		</tbody>
+    </table>
+    
+</div>
+<% include partials/footer %>
