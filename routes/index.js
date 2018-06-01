@@ -201,7 +201,6 @@ router.get("/leaderboard", async function (req, res) {
 			"July", "August", "September", "October", "November", "December"][qMonth - 1];
 		title += " " + qYear;
 	}
-	console.log(aggregationPipeline);
 	let data = await Log.aggregate(aggregationPipeline);
 	res.render("leaderboard", { users: data, title: title });
 });
